@@ -19,8 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				serif: ['Cormorant', 'serif'],
-				sans: ['Open Sans', 'sans-serif'],
+				handwritten: ['Caveat', 'cursive'],
+				sans: ['Nunito', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
