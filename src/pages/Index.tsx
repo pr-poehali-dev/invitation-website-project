@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,35 @@ export default function Index() {
     message: '',
     attending: true
   });
+
+  const weddingDate = new Date('2026-08-08T15:00:00');
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = weddingDate.getTime() - now.getTime();
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +137,88 @@ export default function Index() {
             <span className="text-4xl animate-bounce" style={{ animationDelay: '0.2s' }}>✨</span>
             <span className="text-4xl animate-bounce" style={{ animationDelay: '0.4s' }}>🎊</span>
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 px-4 relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <span className="text-6xl mb-4 block">⏰</span>
+            <h2 className="font-handwritten text-6xl md:text-7xl text-primary mb-4 font-bold">До свадьбы осталось</h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-16">
+            <Card className="border-4 border-primary/30 bg-white/80 backdrop-blur">
+              <CardContent className="p-6 text-center">
+                <div className="font-handwritten text-5xl md:text-6xl text-primary font-bold mb-2">{timeLeft.days}</div>
+                <div className="font-sans text-lg text-muted-foreground font-semibold">дней</div>
+              </CardContent>
+            </Card>
+            <Card className="border-4 border-secondary/50 bg-white/80 backdrop-blur">
+              <CardContent className="p-6 text-center">
+                <div className="font-handwritten text-5xl md:text-6xl text-primary font-bold mb-2">{timeLeft.hours}</div>
+                <div className="font-sans text-lg text-muted-foreground font-semibold">часов</div>
+              </CardContent>
+            </Card>
+            <Card className="border-4 border-accent/50 bg-white/80 backdrop-blur">
+              <CardContent className="p-6 text-center">
+                <div className="font-handwritten text-5xl md:text-6xl text-primary font-bold mb-2">{timeLeft.minutes}</div>
+                <div className="font-sans text-lg text-muted-foreground font-semibold">минут</div>
+              </CardContent>
+            </Card>
+            <Card className="border-4 border-primary/30 bg-white/80 backdrop-blur">
+              <CardContent className="p-6 text-center">
+                <div className="font-handwritten text-5xl md:text-6xl text-primary font-bold mb-2">{timeLeft.seconds}</div>
+                <div className="font-sans text-lg text-muted-foreground font-semibold">секунд</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mb-12">
+            <span className="text-6xl mb-4 block">📅</span>
+            <h3 className="font-handwritten text-5xl md:text-6xl text-primary mb-8 font-bold">Отметьте в календаре!</h3>
+          </div>
+
+          <Card className="border-4 border-primary/30 max-w-md mx-auto bg-white/80 backdrop-blur">
+            <CardContent className="p-8">
+              <div className="text-center mb-6">
+                <div className="font-handwritten text-4xl text-primary font-bold mb-2">Август 2026</div>
+              </div>
+              <div className="grid grid-cols-7 gap-2">
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Пн</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Вт</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Ср</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Чт</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Пт</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Сб</div>
+                <div className="text-center font-sans text-sm font-semibold text-muted-foreground p-2">Вс</div>
+                
+                {[...Array(5)].map((_, i) => (
+                  <div key={`empty-${i}`} className="p-2"></div>
+                ))}
+                {[...Array(31)].map((_, i) => {
+                  const day = i + 1;
+                  const isWeddingDay = day === 8;
+                  return (
+                    <div
+                      key={day}
+                      className={`p-2 text-center font-sans font-semibold rounded-xl transition-all ${
+                        isWeddingDay
+                          ? 'bg-primary text-white scale-125 shadow-lg animate-pulse border-4 border-primary/50'
+                          : 'text-foreground hover:bg-muted/50'
+                      }`}
+                    >
+                      {day}
+                      {isWeddingDay && <div className="text-xs mt-1">💕</div>}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-6 text-center">
+                <p className="font-handwritten text-2xl text-primary font-bold">Суббота, 8 августа 2026</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
